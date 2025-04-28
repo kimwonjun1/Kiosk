@@ -22,6 +22,8 @@ public class Menu {
         return this.categoryName;
     }
 
+    public List<MenuItem> getMenuItems() { return this.menuItems; }
+
     // List에 들어있는 MenuItem을 순차적으로 보여주는 메서드
     // categoryName에 따라 categoryName에 맞는 메뉴와 각 메뉴의 정보(이름, 가격, 설명)를 출력
     public void viewMenuItem() {
