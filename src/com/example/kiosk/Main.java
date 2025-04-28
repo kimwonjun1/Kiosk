@@ -1,14 +1,14 @@
-package com.example.kiosklv1;
-
-import java.util.Scanner;
+package com.example.kiosk;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+        // Menu 객체 생성을 통해 이름 설정
+//        Menu menu = new Menu("Burgers");
+        // Menu 클래스 내 있는 List<MenuItem> 에 MenuItem 객체 생성하면서 삽입
 
-        System.out.println("[ SHAKESHACK MENU ]");
-        System.out.println("1. ShackBurger   | W 6.9 | 토마토, 양상추, 쉑소스가 토핑된 치즈버거");
-        System.out.println("");
-        sc.nextInt();
+        // Kiosk 객체 생성
+        Kiosk kiosk = new Kiosk();
+        // Kiosk 내 시작하는 함수 호출
+        kiosk.start();
     }
 }
