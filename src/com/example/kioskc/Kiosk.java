@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Kiosk {
-    // Menu를 List로 관리. private로 선언하여 외부에서 menu 변경 불가
-    private List<Menu> menu;
-    private Cart cart;
+    // 속성
+    private List<Menu> menu; // Menu를 List로 관리. private로 선언하여 외부에서 menu 변경 불가
+    private Cart cart; // 장바구니
 
     // 생성자
-    // Kiosk 객체를 생성 시 Menu List에 Burgers, Drinks, Desserts Menu 객체를 생성하여 추가
+    // Kiosk 객체를 생성 시 Menu List에 Burgers, Drinks, Desserts Menu 객체를 생성하여 추가. Cart 객체 생성
     public Kiosk() {
         this.menu = new ArrayList<>();
         menu.add(new Menu("Burgers"));
@@ -21,7 +21,7 @@ public class Kiosk {
     }
 
     // 기능
-    // 메뉴를 출력하고 메뉴를 선택(번호 입력)하면 입력받은 번호에 따라 MenuSelection 메서드를 호출하는 메서드
+    // 메뉴를 출력하고 메뉴를 선택(번호 입력)하면 입력받은 번호에 따라 MenuSelection, OrderMenuSelection 메서드를 호출하는 메서드
     public void start() {
         // Scanner 선언
         Scanner sc = new Scanner(System.in);
@@ -49,7 +49,7 @@ public class Kiosk {
                     MenuSelection(orderIndex, sc); // MenuSelection 메서드 호출
                     boolean orderCheck = OrderMenuSelection(orderIndex, sc);
                     if(orderCheck) {
-                        OrderSelection(orderIndex, sc);
+                        LastOrderSelection(orderIndex, sc);
                     }
                 } else {
                     System.out.println("메뉴(번호)를 잘못 입력하였습니다. 다시 입력해주세요.");
@@ -83,14 +83,14 @@ public class Kiosk {
     }
 
     public boolean OrderMenuSelection(int orderNum, Scanner sc) {
-        cart.printOrderMenu(); // ORDER MENU 창 출력
+        cart.printOrderMenu(menu.size() + 1, menu.size() + 2); // ORDER MENU 창 출력
         int checkNum = 0;
         try {
             checkNum = sc.nextInt(); // 숫자 입력 받기
-            if (checkNum == 4) { // 4번 입력시
+            if (checkNum == menu.size() + 1) { // 4번 입력시
                 cart.printOrders(orderNum); // 장바구니에 추가된 메뉴 아이템들을 출력
                 return true;
-            } else if (checkNum == 5) { // 5번 입력시
+            } else if (checkNum == menu.size() + 2) { // 5번 입력시
                 cart.getCartItem().clear(); // 장바구니에 있는 메뉴 아이템을 클리어(주문 취소)
                 return false; // 메뉴판으로 돌아가기
             } else {
@@ -102,12 +102,13 @@ public class Kiosk {
         return false;
     }
 
-    public void OrderSelection(int orderNum,Scanner sc) {
+    public void LastOrderSelection(int orderNum,Scanner sc) {
         System.out.println("1. 주문   2.메뉴판");
         try {
             int lastOrderNum = sc.nextInt();
             if (lastOrderNum == 1) { // 1번 입력시
-                System.out.printf("주문이 완료되었습니다. 금액은 %.1f 입니다.\n", cart.getTotalPrice()); // 주문 완료 & 총 주문 금액을 출력
+                System.out.printf("주문이 완료되었습니다. 금액은 %.1f 입니다.\n", cart.calcTotalPrice()); // 주문 완료 & 총 주문 금액을 출력
+                cart.clearCart();
             } else if (lastOrderNum == 2) { // 2번 입력시
                 return; // 메뉴판으로 이동
             } else {
@@ -116,6 +117,5 @@ public class Kiosk {
         } catch (InputMismatchException e) {
             System.out.println("1 또는 2를 입력해주세요.");
         }
-
     }
 }
