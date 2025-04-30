@@ -55,8 +55,8 @@ public class Menu {
 
     // 선택한 메뉴의 정보(이름, 가격, 설명)을 출력하는 메서드
     public void selectMenuItem(int orderMenuNum) {
-        if (orderMenuNum >= 1 && orderMenuNum <= menuItems.size()) {
-            MenuItem selectedItem = menuItems.get(orderMenuNum - 1);
+        if (orderMenuNum >= 0 && orderMenuNum < menuItems.size()) {
+            MenuItem selectedItem = menuItems.get(orderMenuNum);
             System.out.printf("선택한 메뉴 : %-15s| w %.1f | %-100s\n",
                     selectedItem.getName(),
                     selectedItem.getPrice(),
