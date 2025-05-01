@@ -49,7 +49,7 @@ public class Kiosk {
                     MenuSelection(orderIndex, sc); // MenuSelection 메서드 호출
                     boolean orderCheck = OrderMenuSelection(orderIndex, sc);
                     if(orderCheck) {
-                        LastOrderSelection(orderIndex, sc);
+                        confirmOrder(orderIndex, sc);
                     }
                 } else {
                     System.out.println("메뉴(번호)를 잘못 입력하였습니다. 다시 입력해주세요.");
@@ -82,6 +82,7 @@ public class Kiosk {
         }
     }
 
+    // ORDER MENU 창을 통해 입력값에 따라 장바구니 메뉴 아이템을 출력하거나 메뉴판으로 돌아가는 메서드
     public boolean OrderMenuSelection(int orderNum, Scanner sc) {
         cart.printOrderMenu(menu.size() + 1, menu.size() + 2); // ORDER MENU 창 출력
         int checkNum = 0;
@@ -93,7 +94,7 @@ public class Kiosk {
             } else if (checkNum == menu.size() + 2) { // 5번 입력시
                 cart.getCartItem().clear(); // 장바구니에 있는 메뉴 아이템을 클리어(주문 취소)
                 return false; // 메뉴판으로 돌아가기
-            } else {
+            } else { // 4, 5 이외의 값에 대한 예외처리
                 System.out.println("4 또는 5를 입력해주세요");
             }
         } catch (InputMismatchException e) {
@@ -102,14 +103,16 @@ public class Kiosk {
         return false;
     }
 
-    public void LastOrderSelection(int orderNum,Scanner sc) {
+    // 주문을 확인하며 주문 처리 후 총 주문 금액(할인율 적용)을 출력하는 메서드
+    public void confirmOrder(int orderNum,Scanner sc) {
         System.out.println("1. 주문   2.메뉴판");
         try {
-            int lastOrderNum = sc.nextInt();
-            if (lastOrderNum == 1) { // 1번 입력시
-                System.out.printf("주문이 완료되었습니다. 금액은 %.1f 입니다.\n", cart.calcTotalPrice()); // 주문 완료 & 총 주문 금액을 출력
+            int confirmOrderNum = sc.nextInt();
+            if (confirmOrderNum == 1) { // 1번 입력시
+                double totalPrice = discountApply(sc);
+                System.out.printf("주문이 완료되었습니다. 금액은 %.1f 입니다.\n", totalPrice); // 주문 완료 & 총 주문 금액을 출력
                 cart.clearCart();
-            } else if (lastOrderNum == 2) { // 2번 입력시
+            } else if (confirmOrderNum == 2) { // 2번 입력시
                 return; // 메뉴판으로 이동
             } else {
                 System.out.println("1 또는 2를 입력해주세요.");
@@ -117,5 +120,19 @@ public class Kiosk {
         } catch (InputMismatchException e) {
             System.out.println("1 또는 2를 입력해주세요.");
         }
+    }
+
+    // 입력된 할인 정보(discountNum)에 따라 할인률을 적용하여 반환해주는 메서드
+    public double discountApply(Scanner sc) {
+        System.out.println("할인 정보를 입력해주세요.");
+        System.out.println("1. 국가유공자 : 10% \n" +
+                "2. 군인     :  5%\n" +
+                "3. 학생     :  3%\n" +
+                "4. 일반     :  0%");
+        int discountNum = sc.nextInt(); // 할인 정보 입력
+        User user = User.getUserByDiscountNum(discountNum);  // discountNum에 따라 User enum 클래스에서 객체 생성
+
+        double totalPrice = cart.calcTotalPrice();  // 총 주문 금액 계산
+        return user.discount(totalPrice); // 할인률을 적용한 금액 리턴
     }
 }
